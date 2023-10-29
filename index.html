@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>uncommon</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+        <meta property="og:image" content="/uncommon.png" />
+        <meta property="og:title" content="uncommon" />
+	</head>
+    <style type="text/css">
+		body {
+		box-sizing: border-box;
+		height: 100%;
+		background-color: #222;
+		text-align: center;
+		background-image: linear-gradient(-0.25turn,#00000019, rgb(15, 15, 15) 50%), url("assets/artifact.gif");
+		background-repeat: no-repeat;
+		background-size: cover;
+		font-family: 'Inconsolata', Helvetica, sans-serif;
+		font-size: 1.75rem;
+		margin:0px;
+		color:#ff9428 !important;
+		text-shadow:
+			rgba(222, 222, 222, 0.3) 0 0 0px,
+			0 0 2px rgba(255, 255, 255, 0.8);
+		}
+
+		a:hover {
+		text-decoration: underline;
+		}
+
+		button {
+			cursor: pointer;
+			text-transform: uppercase;
+		}
+
+		#info {
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+			text-align: center;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			pointer-events: none;
+			z-index: 1; /* TODO Solve this in HTML */
+		}
+
+		a, button, input, select {
+			pointer-events: auto;
+		}
+
+		.lil-gui {
+			z-index: 2 !important; /* TODO Solve this in HTML */
+		}
+
+		@media all and ( max-width: 640px ) {
+			.lil-gui.root { 
+				right: auto;
+				top: auto;
+				max-height: 50%;
+				max-width: 80%;
+				bottom: 0;
+				left: 0;
+			}
+		}
+
+		#overlay {
+			position: absolute;
+			font-size: 16px;
+			z-index: 1;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			background: rgba(0,0,0,0.7);
+		}
+
+			#overlay button {
+				background: transparent;
+				border: 0;
+				border: 1px solid rgb(255, 255, 255);
+				border-radius: 4px;
+				color: #ffffff;
+				padding: 12px 18px;
+				text-transform: uppercase;
+				cursor: pointer;
+			}
+
+		#notSupported {
+			width: 50%;
+			margin: auto;
+			background-color: #f00;
+			margin-top: 20px;
+			padding: 10px;
+		}
+
+
+		.noise {
+		pointer-events: none;
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background-image: url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif");
+		background-repeat: no-repeat;
+		background-size: cover;
+		z-index: -5;
+		opacity: .001;
+		}
+
+		.overlay {
+		pointer-events: none;
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background:
+			repeating-linear-gradient(
+			180deg,
+			rgba(0, 0, 0, 0) 0,
+			rgba(0, 0, 0, 0.3) 50%,
+			rgba(0, 0, 0, 0) 100%);
+		background-size: auto 2px;
+		z-index: 1;
+		}
+
+		.overlay::before {
+		content: "";
+		pointer-events: none;
+		position: absolute;
+		display: block;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 100%;
+		height: 100%;
+		background-image: linear-gradient(
+			0deg,
+			transparent 0%,
+			rgba(255, 255, 255, 0.2) 1%,
+			rgba(255, 255, 255, 0.8) 1%,
+			rgba(255, 255, 255, 0.2) 3%,
+			transparent 100%);
+		background-repeat: no-repeat;
+		animation: scan 7.5s linear 0s infinite;
+		}
+
+		@keyframes scan {
+		0%        { background-position: 0 -100vh; }
+		35%, 100% { background-position: 0 100vh; }
+		}
+
+		.terminal {
+		box-sizing: inherit;
+		position: absolute;
+		height: 100%;
+		width: 320px;
+		max-width: 100%;
+		padding: 1rem 1.75rem;
+		text-transform: uppercase;
+		text-align:left;
+		}
+
+		.output {
+			color:white;
+		text-shadow:
+			0 0 1px rgba(255, 133, 51, 0.4),
+			0 0 2px rgba(255, 255, 255, 0.8);
+		}
+
+		.output::before {
+		content: "";
+		}
+
+		/*
+		.input {
+		color: rgba(192, 255, 192, 0.8);
+		text-shadow:
+			0 0 1px rgba(51, 255, 51, 0.4),
+			0 0 2px rgba(255, 255, 255, 0.8);
+		}
+
+		.input::before {
+		content: "$ ";
+		}
+		*/
+
+		a {
+		color: #fff;
+		text-decoration: none;
+		}
+
+		a::before {
+		content: "[";
+		}
+
+		a::after {
+		content: "]";
+		}
+
+		.errorcode {
+		color: white;
+		}
+		.orangecode{
+		color: #ff7d00 !important
+		}
+	</style>
+	<body>
+		<div class="noise"></div>
+		<div class="overlay"></div>
+		<div class="terminal">
+		<h1>UNCOMMON<span class="errorcode">WTF</span></h1><br>
+		<p class="output">We're building something special. <span class="orangecode"><br>Service unavailable</span> <br>好事将来<br>  <span class="orangecode">try later.</span></p>
+		<p class="output"><a href="https://x.com/uncommonwtf">FOLLOW US ON X</a><br> <span class="orangecode">FOR UPDATES.</span></p>
+        </div>
+		<!-- <canvas style=" position: absolute;width:100%;
+		height:100vh;z-index:-10" id=a></canvas> -->
+		<div id="info">
+			<!-- <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - arcball controls<br/> -->
+			<a href="https://x.com/uncommonwtf" target="_blank" rel="noopener" style="font-size:12px">uncommon</a>
+		</div>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "./js/three.module.js",
+					"three/addons/": "./jsm/"
+				}
+			}
+		</script>
+
+		<script type="module">
+		import * as THREE from 'three';
+		// import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+		import { GLTFLoader } from './js/GLTFLoader.js';
+		import { RGBELoader } from './js/RGBELoader.js';
+		import { ArcballControls } from './js/ArcballControls.js';
+
+		const cameras = ['Orthographic', 'Perspective'];
+		const cameraType = { type: 'Perspective' };
+		const perspectiveDistance = 3;
+		const orthographicDistance = 120;
+
+		let camera, controls, scene, renderer, folderOptions, folderAnimations, envMap, mixer;
+
+		new RGBELoader()
+			.setPath( 'assets/uncommon/' )
+			.load( 'studio.hdr', function ( texture ) {
+				texture.mapping = THREE.EquirectangularReflectionMapping;
+				// scene.background = texture;
+				scene.environment = texture;		
+		} );
+
+		function init() {
+			setupRenderer();
+			setupScene();
+			setupGLTFLoader();
+			animate();
+		}
+
+		function setupRenderer() {
+			const container = document.createElement('div');
+			document.body.appendChild(container);
+
+			renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.toneMapping = THREE.ReinhardToneMapping;
+			renderer.toneMappingExposure = 2;
+			renderer.domElement.style.background = 'transparent';
+			container.appendChild(renderer.domElement);
+		}
+
+		function setupScene() {
+			scene = new THREE.Scene();
+			camera = makePerspectiveCamera();
+			camera.position.set(0, 0, perspectiveDistance);
+		}
+
+		function setupGLTFLoader() {
+			const loader = new GLTFLoader();
+			loader.setPath('assets/uncommon/');
+			loader.load('uncommon.glb', handleGLTFLoad);
+		}
+
+		function handleGLTFLoad(gltf) {
+			if (gltf.animations && gltf.animations.length) {
+				mixer = new THREE.AnimationMixer(gltf.scene);
+				gltf.animations.forEach((clip) => mixer.clipAction(clip).play());
+			}
+
+			const chromeMaterial = new THREE.MeshStandardMaterial({
+				color: 0xffffff,
+				metalness: 0,
+				roughness: 1,
+				// envMap: envMap
+			});
+
+			gltf.scene.traverse((child) => {
+				if (child.isMesh) child.material = chromeMaterial;
+			});
+
+			gltf.scene.rotation.y = Math.PI / 1.5;
+			gltf.scene.rotation.z = Math.PI / 1.2;
+			scene.add(gltf.scene);
+
+			controls = new ArcballControls(camera, renderer.domElement, scene);
+			controls.addEventListener('change', render);
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+			if (mixer) mixer.update(0.0042);
+			render();
+		}
+
+		function makeOrthographicCamera() {
+			const halfFovV = THREE.MathUtils.DEG2RAD * 45 * 0.5;
+			const halfFovH = Math.atan((window.innerWidth / window.innerHeight) * Math.tan(halfFovV));
+			const halfW = perspectiveDistance * Math.tan(halfFovH);
+			const halfH = perspectiveDistance * Math.tan(halfFovV);
+			return new THREE.OrthographicCamera(-halfW, halfW, halfH, -halfH, 0.01, 2000);
+		}
+
+		function makePerspectiveCamera() {
+			return new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 200);
+		}
+
+		function onWindowResize() {
+			if (camera.type == 'OrthographicCamera') {
+				updateOrthographicCameraDimensions();
+			} else if (camera.type == 'PerspectiveCamera') {
+				camera.aspect = window.innerWidth / window.innerHeight;
+			}
+			camera.updateProjectionMatrix();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			render();
+		}
+
+		function updateOrthographicCameraDimensions() {
+			const halfFovV = THREE.MathUtils.DEG2RAD * 45 * 0.5;
+			const halfFovH = Math.atan((window.innerWidth / window.innerHeight) * Math.tan(halfFovV));
+			const halfW = perspectiveDistance * Math.tan(halfFovH);
+			const halfH = perspectiveDistance * Math.tan(halfFovV);
+			camera.left = -halfW;
+			camera.right = halfW;
+			camera.top = halfH;
+			camera.bottom = -halfH;
+		}
+
+		function render() {
+			renderer.render(scene, camera);
+		}
+
+		function setCamera(type) {
+			if (type == 'Orthographic') {
+				camera = makeOrthographicCamera();
+				camera.position.set(0, 0, orthographicDistance);
+			} else if (type == 'Perspective') {
+				camera = makePerspectiveCamera();
+				camera.position.set(0, 0, perspectiveDistance);
+			}
+			controls.setCamera(camera);
+			render();
+		}
+
+		init();
+		window.addEventListener('resize', onWindowResize);
+		</script>
+	</body>
