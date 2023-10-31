@@ -109,6 +109,14 @@
 			padding: 10px;
 		}
 
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+        }
+
 
 		.noise {
 		pointer-events: none;
@@ -123,56 +131,61 @@
 		}
 
 		.overlay {
-		pointer-events: none;
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		background:
-			repeating-linear-gradient(
-			180deg,
-			rgba(0, 0, 0, 0) 0,
-			rgba(0, 0, 0, 0.3) 50%,
-			rgba(0, 0, 0, 0) 100%);
-		background-size: auto 2px;
-		z-index: 1;
-		}
+        pointer-events: none;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: 
+            repeating-linear-gradient(
+                180deg,
+                rgba(0, 0, 0, 0) 0,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0) 100%
+            );
+        background-size: auto 2px;
+        z-index: 1;
+        }
 
-		.overlay::before {
-		content: "";
-		pointer-events: none;
-		position: absolute;
-		display: block;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		width: 100%;
-		height: 100%;
-		background-image: linear-gradient(
-			0deg,
-			transparent 0%,
-			rgba(255, 255, 255, 0.2) 1%,
-			rgba(255, 255, 255, 0.8) 1%,
-			rgba(255, 255, 255, 0.2) 3%,
-			transparent 100%);
-		background-repeat: no-repeat;
-		animation: scan 7.5s linear 0s infinite;
-		}
+        .overlay::before {
+            content: "";
+            pointer-events: none;
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(
+                0deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.2) 1%,
+                rgba(255, 255, 255, 0.8) 1%,
+                rgba(255, 255, 255, 0.2) 3%,
+                transparent 100%
+            );
+            background-repeat: no-repeat;
+            animation: scan 7.5s linear 0s infinite;
+        }
+
 
 		@keyframes scan {
 		0%        { background-position: 0 -100vh; }
 		35%, 100% { background-position: 0 100vh; }
 		}
 
+
 		.terminal {
-		box-sizing: inherit;
-		position: absolute;
-		height: 100%;
-		width: 320px;
-		max-width: 100%;
-		padding: 1rem 1.75rem;
-		text-transform: uppercase;
-		text-align:left;
+        box-sizing: border-box;
+        top: 0;
+        height: calc(100vh); /* Subtracting the top and bottom padding */
+        width: 320px;
+        max-width: 90%; /* Reduced to 90% to ensure it doesn't overflow on smaller screens */
+        padding: 1rem 1.75rem;
+        text-transform: uppercase;
+        text-align: left;
+        z-index: 1; /* Ensuring it's above other elements */
 		}
 
 		.output {
@@ -242,7 +255,6 @@
 				}
 			}
 		</script>
-
 		<script type="module">
 		import * as THREE from 'three';
 		// import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
@@ -294,7 +306,7 @@
 		function setupGLTFLoader() {
 			const loader = new GLTFLoader();
 			loader.setPath('assets/uncommon/');
-			loader.load('uncommon.glb', handleGLTFLoad);
+			loader.load('uncommon4.glb', handleGLTFLoad);
 		}
 
 		function handleGLTFLoad(gltf) {
@@ -305,7 +317,7 @@
 
 			const chromeMaterial = new THREE.MeshStandardMaterial({
 				color: 0xffffff,
-				metalness: 0,
+				metalness: 1,
 				roughness: 1,
 				// envMap: envMap
 			});
@@ -381,4 +393,10 @@
 		init();
 		window.addEventListener('resize', onWindowResize);
 		</script>
+        <script type="module">            
+            const container = document.createElement('div');
+            document.body.appendChild(container);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            container.appendChild(renderer.domElement);
+        </script>
 	</body>
